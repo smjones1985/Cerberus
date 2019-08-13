@@ -1,6 +1,10 @@
-from gpiozero import *
+#from gpiozero import *
 
-class Garage(object):
+class Garage:
+
+    def __init__(self):
+        """ Create a new point at the origin """
+
     garageActivatePin = LED(4)
 
     def activateGarage():
@@ -14,11 +18,11 @@ class Garage(object):
              pass
 
     def checkStatus():
-        garageStatusPin = MotionSensor(18)
-        if(garageStatusPin.is_active):
-            return "Open"
+        garagestatuspin = motionsensor(18)
+        if(garagestatuspin.is_active):
+            return "open"
         else:
-            return "Closed"
+            return "closed"
         
 
 
