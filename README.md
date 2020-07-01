@@ -22,3 +22,8 @@ pi@raspberrypi:~/web-server/templates $
 Create a new file called main.html.
 
 pi@raspberrypi:~/web-server/templates $ nano main.html
+
+pi@raspberrypi:~/web-server/templates $ cd ..
+Then run the following command:
+
+pi@raspberrypi:~/web-server $ sudo python app.py
