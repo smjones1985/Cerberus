@@ -13,3 +13,12 @@ pi@raspberrypi ~ $ cd web-server
 pi@raspberrypi:~/web-server $
 
 pi@raspberrypi:~/web-server $ nano app.py
+
+Create a new folder called templates:
+
+pi@raspberrypi:~/web-server $ mkdir templates
+pi@raspberrypi:~/web-server $ cd templates
+pi@raspberrypi:~/web-server/templates $
+Create a new file called main.html.
+
+pi@raspberrypi:~/web-server/templates $ nano main.html
