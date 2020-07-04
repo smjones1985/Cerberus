@@ -1,29 +1,15 @@
-# Cerberus
-https://randomnerdtutorials.com/raspberry-pi-web-server-using-flask-to-control-gpios/
+1. run set_cerberus.sh for fresh install
+2. to run the application: sudo python app.py
 
+Setup rc.local to have application run at boot: 
 
-pi@raspberrypi ~ $ sudo apt-get update
-pi@raspberrypi ~ $ sudo apt-get upgrade
-pi@raspberrypi ~ $ sudo apt-get install python-pip python-flask
-Then, you use pip to install Flask and its dependencies:
+sudo nano /etc/rc.local
+Add commands to execute the python program, preferably using absolute referencing of the file location (complete file path are preferred). Be sure to leave the line exit 0 at the end, then save the file and exit. In nano, to exit, type Ctrl-x, and then Y.
 
-pi@raspberrypi ~ $ sudo pip install flask
-pi@raspberrypi ~ $ mkdir web-server
-pi@raspberrypi ~ $ cd web-server
-pi@raspberrypi:~/web-server $
+Edit RC Local File Configure Run a Program On Your Raspberry Pi At Startup
 
-pi@raspberrypi:~/web-server $ nano app.py
+If your program runs continuously (runs an infinite loop) or is likely not to exit, you must be sure to fork the process by adding an ampersand (“&”) to the end of the command, like:
 
-Create a new folder called templates:
+sudo python /home/pi/sample.py &
+The Pi will run this program at bootup, and before other services are started.  If you don’t include the ampersand and if your program runs continuously, the Pi will not complete its boot process. The ampersand allows the command to run in a separate process and continue booting with the main process running.
 
-pi@raspberrypi:~/web-server $ mkdir templates
-pi@raspberrypi:~/web-server $ cd templates
-pi@raspberrypi:~/web-server/templates $
-Create a new file called main.html.
-
-pi@raspberrypi:~/web-server/templates $ nano main.html
-
-pi@raspberrypi:~/web-server/templates $ cd ..
-Then run the following command:
-
-pi@raspberrypi:~/web-server $ sudo python app.py
