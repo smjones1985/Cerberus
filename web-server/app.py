@@ -8,6 +8,10 @@ Complete project details: http://randomnerdtutorials.com
 '''
 
 import RPi.GPIO as GPIO
+import pytz
+import time
+
+from datetime import datetime
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -15,23 +19,39 @@ GPIO.setmode(GPIO.BCM)
 
 # Create a dictionary called pins to store the pin number, name, and pin state:
 pins = {
-   23 : {'name' : 'GPIO 23', 'state' : GPIO.LOW},
    24 : {'name' : 'GPIO 24', 'state' : GPIO.LOW}
    }
-
+error = ""
+garageDoorStatus = "Unknown"
+doorStatusDictionary = {
+   True: "Open",
+   False: "Closed"
+}
+central = pytz.timezone('US/Central')
+garageDoorStatusTimeStamp = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
 # Set each pin as an output and make it low:
 for pin in pins:
    GPIO.setup(pin, GPIO.OUT)
    GPIO.output(pin, GPIO.LOW)
+
+DOOR_SENSOR_PIN = 18
+GPIO.setup(DOOR_SENSOR_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) 
+
 
 @app.route("/")
 def main():
    # For each pin, read the pin state and store it in the pins dictionary:
    for pin in pins:
       pins[pin]['state'] = GPIO.input(pin)
+
+   garageDoorStatus = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
+   garageDoorStatusTimeStamp = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
    # Put the pin dictionary into the template data dictionary:
    templateData = {
-      'pins' : pins
+      'pins' : pins,
+      'garageDoorStatus' : garageDoorStatus,
+      'garageDoorStatusTimeStamp' : garageDoorStatusTimeStamp,
+      'message' : ''
       }
    # Pass the template data into the template main.html and return it to the user
    return render_template('main.html', **templateData)
@@ -41,17 +61,26 @@ def main():
 def action(changePin, action):
    # Convert the pin from the URL into an integer:
    changePin = int(changePin)
-   # Get the device name for the pin being changed:
-   deviceName = pins[changePin]['name']
+
+   originalDoorState = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
    # If the action part of the URL is "on," execute the code indented below:
-   if action == "on":
       # Set the pin high:
-      GPIO.output(changePin, GPIO.HIGH)
-      # Save the status message to be passed into the template:
-      message = "Turned " + deviceName + " on."
-   if action == "off":
-      GPIO.output(changePin, GPIO.LOW)
-      message = "Turned " + deviceName + " off."
+   GPIO.output(changePin, GPIO.HIGH)
+   time.sleep(3)
+   GPIO.output(changePin, GPIO.LOW)
+   time.sleep(5)
+   newStateOfDoor = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
+
+   currentTime = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
+
+
+   garageDoorStatus = doorStatusDictionary[newStateOfDoor]
+
+   garageDoorStatusTimeStamp = currentTime
+
+   if originalDoorState == newStateOfDoor:
+      message = "Garage door call failed! " + currentTime
+   message = "Success! " + currentTime 
 
    # For each pin, read the pin state and store it in the pins dictionary:
    for pin in pins:
@@ -59,7 +88,10 @@ def action(changePin, action):
 
    # Along with the pin dictionary, put the message into the template data dictionary:
    templateData = {
-      'pins' : pins
+      'pins' : pins,
+      'garageDoorStatus' : garageDoorStatus,
+      'garageDoorStatusTimeStamp' : garageDoorStatusTimeStamp,
+      'message' : message
    }
 
    return render_template('main.html', **templateData)

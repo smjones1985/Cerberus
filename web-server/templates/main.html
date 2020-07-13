@@ -13,13 +13,15 @@
    <h1>RPi Web Server</h1>
    {% for pin in pins %}
    <h2>{{ pins[pin].name }}
+      <a href="/{{pin}}/on" class="btn btn-block btn-lg btn-default" role="button">Check Garage Door Status</a></div></div>
    {% if pins[pin].state == true %}
       is currently <strong>on</strong></h2><div class="row"><div class="col-md-2">
-      <a href="/{{pin}}/off" class="btn btn-block btn-lg btn-default" role="button">Turn off</a></div></div>
-   {% else %}
-      is currently <strong>off</strong></h2><div class="row"><div class="col-md-2">
-      <a href="/{{pin}}/on" class="btn btn-block btn-lg btn-primary" role="button">Turn on</a></div></div>
+      <a href="/{{pin}}/on" class="btn btn-block btn-lg btn-default" role="button">Activate Garage Door</a></div></div>
    {% endif %}
    {% endfor %}
+   <h2>{{ message }}</h2>  
+      <br> 
+   <h2>Garage Door is: {{ garageDoorStatus }}</h2>   
+   <h2>Last Checked on: {{ garageDoorStatusTimeStamp }}</h2>   
 </body>
 </html>
