@@ -8,6 +8,7 @@ Complete project details: http://randomnerdtutorials.com
 '''
 
 import RPi.GPIO as GPIO
+from pytz import timezone
 import pytz
 import time
 
@@ -24,8 +25,8 @@ pins = {
 error = ""
 garageDoorStatus = "Unknown"
 doorStatusDictionary = {
-   True: "Open",
-   False: "Closed"
+   0: "Open",
+   1: "Closed"
 }
 central = pytz.timezone('US/Central')
 garageDoorStatusTimeStamp = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
@@ -44,7 +45,8 @@ def main():
    for pin in pins:
       pins[pin]['state'] = GPIO.input(pin)
 
-   garageDoorStatus = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
+   sensorPin = GPIO.input(DOOR_SENSOR_PIN)
+   garageDoorStatus = doorStatusDictionary[sensorPin]
    garageDoorStatusTimeStamp = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
    # Put the pin dictionary into the template data dictionary:
    templateData = {
