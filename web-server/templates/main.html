@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-   <title>RPi Web Server</title>
+   <title>Garage Door Manager</title>
    <!-- Latest compiled and minified CSS -->
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
    <!-- Optional theme -->
@@ -12,8 +12,6 @@
 <body>
    <h1>RPi Web Server</h1>
    {% for pin in pins %}
-   <h2>{{ pins[pin].name }}
-      <a href="/{{pin}}/on" class="btn btn-block btn-lg btn-default" role="button">Check Garage Door Status</a></div></div>
    {% if pins[pin].state == true %}
       is currently <strong>on</strong></h2><div class="row"><div class="col-md-2">
       <a href="/{{pin}}/on" class="btn btn-block btn-lg btn-default" role="button">Activate Garage Door</a></div></div>
