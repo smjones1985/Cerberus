@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 from pytz import timezone
 import pytz
 import time
+import json
 
 from datetime import datetime
 from flask import Flask, render_template, request
@@ -20,7 +21,7 @@ GPIO.setmode(GPIO.BCM)
 
 # Create a dictionary called pins to store the pin number, name, and pin state:
 pins = {
-   24 : {'name' : 'GPIO 24', 'state' : GPIO.LOW}
+   24 : {'name' : 'GPIO 24', 'state' : GPIO.LOW} #9th facing outside
    }
 error = ""
 garageDoorStatus = "Unknown"
@@ -35,7 +36,7 @@ for pin in pins:
    GPIO.setup(pin, GPIO.OUT)
    GPIO.output(pin, GPIO.LOW)
 
-DOOR_SENSOR_PIN = 18
+DOOR_SENSOR_PIN = 18 #6th facing outside, 7th is ground
 GPIO.setup(DOOR_SENSOR_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) 
 
 
@@ -54,7 +55,7 @@ def main():
       'garageDoorStatus' : garageDoorStatus,
       'garageDoorStatusTimeStamp' : garageDoorStatusTimeStamp,
       'message' : ''
-      }
+   }
    # Pass the template data into the template main.html and return it to the user
    return render_template('main.html', **templateData)
 
@@ -98,5 +99,13 @@ def action(changePin, action):
 
    return render_template('main.html', **templateData)
 
+@app.route("/check_door_status")
+def statusCheck():
+   templateData = {
+      'garageDoorStatus' : garageDoorStatus,
+      'garageDoorStatusTimeStamp' : garageDoorStatusTimeStamp
+   }
+   return json.dumps(templateData)
+   
 if __name__ == "__main__":
    app.run(host='0.0.0.0', port=80, debug=True)

@@ -4,6 +4,7 @@ sudo apt-get upgrade
 sudo apt-get install python-pip python-flask
 sudo pip install flask
 sudo pip install pytz
+sudo pip install requests
 
 #to run the application: sudo python app.py
 #sudo nano /etc/rc.local
