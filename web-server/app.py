@@ -64,7 +64,6 @@ def main():
 def action(changePin, action):
    # Convert the pin from the URL into an integer:
    changePin = int(changePin)
-
    originalDoorState = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
    # If the action part of the URL is "on," execute the code indented below:
       # Set the pin high:
@@ -73,9 +72,7 @@ def action(changePin, action):
    GPIO.output(changePin, GPIO.LOW)
    time.sleep(5)
    newStateOfDoor = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
-
    currentTime = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
-
 
    garageDoorStatus = doorStatusDictionary[newStateOfDoor]
 
@@ -101,9 +98,12 @@ def action(changePin, action):
 
 @app.route("/check_door_status")
 def statusCheck():
+   originalDoorState = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
+   currentTime = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
+
    templateData = {
-      'garageDoorStatus' : garageDoorStatus,
-      'garageDoorStatusTimeStamp' : garageDoorStatusTimeStamp
+      'garageDoorStatus' : originalDoorState,
+      'garageDoorStatusTimeStamp' : currentTime
    }
    return json.dumps(templateData)
    
