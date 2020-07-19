@@ -12,4 +12,4 @@ If your program runs continuously (runs an infinite loop) or is likely not to ex
 
 sudo python /home/pi/sample.py &
 The Pi will run this program at bootup, and before other services are started.  If you don’t include the ampersand and if your program runs continuously, the Pi will not complete its boot process. The ampersand allows the command to run in a separate process and continue booting with the main process running.
-
+Sup
