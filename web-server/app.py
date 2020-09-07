@@ -26,8 +26,8 @@ pins = {
 error = ""
 garageDoorStatus = "Unknown"
 doorStatusDictionary = {
-   0: "Open",
-   1: "Closed"
+   0: "Closed",
+   1: "Open"
 }
 central = pytz.timezone('US/Central')
 garageDoorStatusTimeStamp = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
@@ -37,7 +37,7 @@ for pin in pins:
    GPIO.output(pin, GPIO.LOW)
 
 DOOR_SENSOR_PIN = 18 #6th facing outside, 7th is ground
-GPIO.setup(DOOR_SENSOR_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP) 
+GPIO.setup(DOOR_SENSOR_PIN, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 
 @app.route("/")
@@ -64,26 +64,20 @@ def main():
 def action(changePin, action):
    # Convert the pin from the URL into an integer:
    changePin = int(changePin)
-
    originalDoorState = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
    # If the action part of the URL is "on," execute the code indented below:
       # Set the pin high:
    GPIO.output(changePin, GPIO.HIGH)
-   time.sleep(3)
+   time.sleep(12)
    GPIO.output(changePin, GPIO.LOW)
-   time.sleep(5)
    newStateOfDoor = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
-
    currentTime = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
-
-
-   garageDoorStatus = doorStatusDictionary[newStateOfDoor]
 
    garageDoorStatusTimeStamp = currentTime
 
    if originalDoorState == newStateOfDoor:
       message = "Garage door call failed! " + currentTime
-   message = "Success! " + currentTime 
+   message = "Success! " + currentTime
 
    # For each pin, read the pin state and store it in the pins dictionary:
    for pin in pins:
@@ -92,7 +86,7 @@ def action(changePin, action):
    # Along with the pin dictionary, put the message into the template data dictionary:
    templateData = {
       'pins' : pins,
-      'garageDoorStatus' : garageDoorStatus,
+      'garageDoorStatus' : newStateOfDoor,
       'garageDoorStatusTimeStamp' : garageDoorStatusTimeStamp,
       'message' : message
    }
@@ -101,11 +95,14 @@ def action(changePin, action):
 
 @app.route("/check_door_status")
 def statusCheck():
+   originalDoorState = doorStatusDictionary[GPIO.input(DOOR_SENSOR_PIN)]
+   currentTime = datetime.now(central).strftime("%d/%m/%Y %H:%M:%S")
+
    templateData = {
-      'garageDoorStatus' : garageDoorStatus,
-      'garageDoorStatusTimeStamp' : garageDoorStatusTimeStamp
+      'garageDoorStatus' : originalDoorState,
+      'garageDoorStatusTimeStamp' : currentTime
    }
    return json.dumps(templateData)
-   
+
 if __name__ == "__main__":
    app.run(host='0.0.0.0', port=80, debug=True)
